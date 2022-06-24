@@ -173,11 +173,13 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'workspaces_img')
 
 # URL used to access the media
 MEDIA_URL = '/workspaces_img/'
+
+from .secret_key import EMAIL_KEY, PASSWORD_KEY
 # MAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = ["EMAIL"]
-EMAIL_HOST_PASSWORD = ["PASSWORD"]
+EMAIL_HOST_USER = EMAIL_KEY
+EMAIL_HOST_PASSWORD = PASSWORD_KEY
 EMAIL_USE_SSL = False
