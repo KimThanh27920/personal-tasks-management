@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import CustomUser, ThemeDetail, Themes
+from .models import CustomUser, ThemeDetail
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.models import update_last_login

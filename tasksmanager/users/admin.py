@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from .models import CustomUser, ThemeDetail, Themes
+from .models import CustomUser, ThemeDetail
 # Register your models here.
 from django.utils.translation import gettext_lazy as _
 
@@ -103,4 +103,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(CustomUser, UserAdmin)
 # admin.site.register(Images)
 admin.site.register(ThemeDetail)
-admin.site.register(Themes)
+#admin.site.register(Themes)

@@ -21,8 +21,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from .utils import Util
 from .serializers import (ChangePasswordSerializer, RegisterSerializer,ResetPasswordEmailRequestSeriallizer,SetNewPasswordSerializer
                             ,LoginSerializer,UpdateUserSerializer,
-                            ThemeSerializer, ThemeDetailSerializer, ThemeDetailCreateSerializer)
-from .models import CustomUser,Themes, ThemeDetail
+                             ThemeDetailSerializer, ThemeDetailCreateSerializer)
+from .models import CustomUser, ThemeDetail
 # Create your views here.
 
 
