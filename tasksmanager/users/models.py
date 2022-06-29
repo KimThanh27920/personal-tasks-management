@@ -10,7 +10,9 @@ from datetime import datetime, timedelta
 
 
 # Create your models here.
+#custom user manager
 class CustomUserManager(BaseUserManager):
+    #override create user 
     def create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError(_('The Email must be set'))
@@ -19,7 +21,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user
-    
+    #override create superuser
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -30,7 +32,7 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
-
+#custom user model
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
@@ -48,11 +50,11 @@ class CustomUser(AbstractUser):
         return jwt.encode({'id':self.id , 'exp': datetime.utcnow() + timedelta(hours = 24)}, settings.SECRET_KEY,algorithm='HS256')
 
 
-class Themes(models.Model):
-    theme = models.CharField(max_length=255,unique=True)
-    def __str__(self):
-        return self.theme
-
+# class Themes(models.Model):
+#     theme = models.CharField(max_length=255,unique=True)
+#     def __str__(self):
+#         return self.theme
+#theme of user 
 class ThemeDetail(models.Model):   
     user = models.OneToOneField(CustomUser, primary_key=True,on_delete= models.CASCADE)
     theme_selected = models.CharField(max_length=25, default='white')

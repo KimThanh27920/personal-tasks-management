@@ -14,7 +14,7 @@ from django.contrib.auth.models import update_last_login
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-
+#register user
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                         }
 
 
-
+#login user with JWT
 class LoginSerializer(TokenObtainPairSerializer):
     token_class = RefreshToken
 
@@ -51,18 +51,21 @@ class LoginSerializer(TokenObtainPairSerializer):
 
         return data
 
+# update profile user
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','email','full_name']
         read_only_fields = ['id']
-    
+
+#send request to reset password    
 class ResetPasswordEmailRequestSeriallizer(serializers.Serializer):
     email  = serializers.EmailField(min_length = 2)
     
     class Meta:
         fields =['email']
 
+#check token and set new password
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length= 255, min_length = 2, write_only = True)
     token = serializers.CharField( min_length = 2, write_only = True)
@@ -87,7 +90,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
             raise AuthenticationError('The reset password link is invalid',401)
         # return super().validate(attrs)
 
-
+# serializer for change password
 class ChangePasswordSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField()
     new_password = serializers.CharField()
@@ -97,18 +100,19 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields = ['old_password','new_password']
         write_only_fields = ['old_password','new_password']
 #theme
-class ThemeSerializer(serializers.ModelSerializer):
+# class ThemeSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Themes
-        fields = '__all__'
+#     class Meta:
+#         model = Themes
+#         fields = '__all__'
 
+#theme of user
 class ThemeDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ThemeDetail
         fields = '__all__'
-
+#serializer for create/update theme of user
 class ThemeDetailCreateSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset= CustomUser.objects.exclude(id__in = ThemeDetail.objects.values_list('user')))
     class Meta:

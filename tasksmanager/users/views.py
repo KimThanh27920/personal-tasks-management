@@ -25,6 +25,8 @@ from .serializers import (ChangePasswordSerializer, RegisterSerializer,ResetPass
 from .models import CustomUser,Themes, ThemeDetail
 # Create your views here.
 
+
+#api register user
 class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer 
     queryset = CustomUser.objects.all()
@@ -43,13 +45,17 @@ class RegisterAPIView(generics.CreateAPIView):
         data["access"] = str(refresh.access_token)
         return Response(data, status=status.HTTP_201_CREATED)
 
+
+#api login with JWT
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
 
+#api update profile user
 class UpdateUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UpdateUserSerializer
     permission_classes = [IsAuthenticated]
    
+   #override to get api with current user, no lookup_url_fields
     def get_object(self):
         #queryset = self.get_queryset()
         obj = get_object_or_404(CustomUser, id=self.request.user.id)
@@ -59,6 +65,7 @@ class UpdateUserView(generics.RetrieveUpdateAPIView):
         queryset = get_object_or_404(CustomUser, pk=self.request.user.id)
         return queryset
     
+    #override to update profile currentuser
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)
         instance = self.get_object()
@@ -73,21 +80,7 @@ class UpdateUserView(generics.RetrieveUpdateAPIView):
 
         return Response(serializer.data)
 
-# class LoginAPIView(GenericAPIView):
-    
-#     serializer_class = LoginSerializer
-
-#     def post(self, request):
-#         email = request.data.get('email', None)
-#         password = request.data.get('password', None)
-
-#         user = authenticate(username = email, password = password)
-        
-#         if user:
-#             serializer = self.serializer_class(user)
-#             return Response(serializer.data, status= status.HTTP_200_OK)
-#         return Response({'message': 'Invalid Credentials, try again !'}, status=status.HTTP_401_UNAUTHORIZED)
-
+#api change password
 class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
@@ -114,6 +107,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#api reset password with email
 class ResetPasswordEmailRequest(GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSeriallizer
 
@@ -125,6 +119,7 @@ class ResetPasswordEmailRequest(GenericAPIView):
             user = CustomUser.objects.filter(email =email)
         except:
             return Response({'message':'Email do not exist'},status=status.HTTP_400_BAD_REQUEST)
+        
         if  user.exists():
             user = CustomUser.objects.get(email =email)
             # uidb64 = urlsafe_base64_encode(user.id)
@@ -147,6 +142,8 @@ class ResetPasswordEmailRequest(GenericAPIView):
             return Response({'success':'We have sent you a link to reset your password'}, status.HTTP_200_OK)
         return Response({'message':'Email do not exist'},status=status.HTTP_400_BAD_REQUEST)
 
+
+#check token to reswt password
 class PasswordTokenCheckAPI(GenericAPIView):
     def get(self, request, id, token):
         try:
@@ -161,6 +158,7 @@ class PasswordTokenCheckAPI(GenericAPIView):
             if not PasswordResetTokenGenerator().check_token(user):
                 return Response({'message':'Token is invalid'}, status.HTTP_401_UNAUTHORIZED)
 
+#reset password after check token
 class SetNewPasswordAPI(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
     
@@ -169,11 +167,12 @@ class SetNewPasswordAPI(GenericAPIView):
 
         serializer.is_valid(raise_exception=True)
         return Response({'success':True,'message':'Passwors is reset successful'}, status.HTTP_200_OK)
+#create/view theme
+# class ThemeAPIView(generics.ListCreateAPIView):
+#     serializer_class = ThemeSerializer
+#     queryset = Themes.objects.all()
 
-class ThemeAPIView(generics.ListCreateAPIView):
-    serializer_class = ThemeSerializer
-    queryset = Themes.objects.all()
-
+#create/view theme of user
 class ThemeDetailAPIView(generics.ListCreateAPIView):
     # serializer_class = ThemeDetailSerializer
     queryset = ThemeDetail.objects.all()
@@ -182,6 +181,8 @@ class ThemeDetailAPIView(generics.ListCreateAPIView):
         if self.request.method == 'GET':
             return ThemeDetailSerializer
         return ThemeDetailCreateSerializer
+
+#update or delete theme of user
 class ThemeDetailUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     #serializer_class = ThemeDetailSerializer
     queryset = ThemeDetail.objects.all()
@@ -192,25 +193,3 @@ class ThemeDetailUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
             return ThemeDetailSerializer
         return ThemeDetailCreateSerializer
 
-#  @api_view(['POST'])
-# def ForgotPasswordAPIView(request):
-#     email = request.data['email']
-    
-#     try:
-#         user = CustomUser.objects.get(email = email)
-#     except CustomUser.DoesNotExist:
-#         user = None
-    
-#     if user is not None :
-#         #user = CustomUser.objects.get(email = email)
-#         refresh = tokens.RefreshToken.for_user(user)
-#         data = {
-#             'access' : str(refresh.access_token),
-#             'refresh' : str(refresh)
-#         }
-#         return Response(data=data, status=status.HTTP_200_OK)
-#     else :
-#         data = {
-#           'message' : 'Email not Found'
-#         }
-#         return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

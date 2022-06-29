@@ -16,7 +16,7 @@ urlpatterns = [
     path('check-token-to-reset-password/<id>/<token>/',PasswordTokenCheckAPI.as_view(),name='password-reset'),
     path('reset-password/',SetNewPasswordAPI.as_view(),name='password-reset-complete'),
 
-    path('themes/', ThemeAPIView.as_view(), name='theme-list-add'),
+    #path('themes/', ThemeAPIView.as_view(), name='theme-list-add'),
     path('theme-detail/', ThemeDetailAPIView.as_view(), name='theme-detail-list-add'),
     path('theme-detail/<user_id>', ThemeDetailUpdateAPIView.as_view(), name='theme-detail-update'),
 
